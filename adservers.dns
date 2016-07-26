@@ -1,0 +1,18 @@
+; NULL Zone File for Ad Servers
+;
+
+@                       IN  SOA ns.localhost.  admin.localhost. (
+                        	131          ; serial number
+                        	28800        ; refresh
+                        	1800         ; retry
+                        	432000       ; expire
+                        	18000      ) ; minimum TTL
+
+;
+;  Zone NS records
+;
+
+@                       NS	ns.localhost
+
+		A	127.0.0.1
+*	IN	A	127.0.0.1
