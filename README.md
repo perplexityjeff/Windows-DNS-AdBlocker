@@ -15,6 +15,8 @@ The script currently uses a very specific AdBlock list from https://pgl.yoyo.org
 Currently in the script we are using this specific AdBlock file:
 https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=0&mimetype=plaintext
 
+The file included in this repo called adservers.dns is a file that is copied to %SystemRoot%\system32\dns as a reference of where the DNS need to go when a ad has been detected. The one that I added routes everything to localhost making them not appear but you could customize this.
+
 # Learning
 
 I am still a beginner in PowerShell and I am learning it through my work as I need to get things done so please be kind to me when you see any weird mistakes or things in the script. I hope it helps someone somewhere :D !
