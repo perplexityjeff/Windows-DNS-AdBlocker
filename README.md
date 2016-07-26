@@ -14,3 +14,7 @@ The script currently uses a very specific AdBlock list from https://pgl.yoyo.org
 
 Currently in the script we are using this specific AdBlock file:
 https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=0&mimetype=plaintext
+
+# Learning
+
+I am still a beginner in PowerShell and I am learning it through my work as I need to get things done so please be kind to me when you see any weird mistakes or things in the script. I hope it helps someone somewhere :D !
