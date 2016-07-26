@@ -1,6 +1,6 @@
 # Windows-DNS-AdBlocker
 
-A simple to use PowerShell script that uses an adblocking list and imports it into the Windows Server DNS entry list to block them. TO be used as a scheduled task to run and update entries. 
+A simple to use PowerShell script that uses an adblocking list and imports it into the Windows Server DNS entry list to block them. To be used as a scheduled task to run and update entries. I suggest running it every weekend.
 
 # Tested
 
