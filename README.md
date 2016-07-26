@@ -4,7 +4,7 @@ A simple to use PowerShell script that uses an adblocking list and imports it in
 
 # Tested
 
-The script has been tested in our own environment on a Windows Server 2008 R2 DNS machine but the script is flexible enough to work for the newer Operating Systems as well. 
+The script has been tested in our own environment (company-wide) on a Windows Server 2008 R2 DNS machine but the script is flexible enough to work for the newer Operating Systems as well. 
 
 # Work in Progress
 
