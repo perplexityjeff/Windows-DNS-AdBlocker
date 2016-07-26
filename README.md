@@ -8,4 +8,4 @@ The script has been tested in our own environment on a Windows Server 2008 R2 DN
 
 # Work in Progress
 
-Before the script will be posted I will first need to strip it of some company specific code.
+Before the script will be posted I will first need to strip it of some company specific code. Also I am still learning PowerShell so it may not be as pretty as it can be but I hope I improve myself and the script as it goes.
