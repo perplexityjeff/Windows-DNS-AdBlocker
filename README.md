@@ -4,6 +4,10 @@ A simple to use PowerShell script that uses an adblocking list and imports it in
 
 We installed this script as a security measure and to ease deployment for all users that do not have the required rights to install an adblocker or the knowledge to do so when they want to. This way the DNS server controls everything and no need for per client installation or management.
 
+## Caution
+
+There is code included to clean up the registry of old DNS entries. This needs to be tweaked to your environment as it is will otherwise delete valid DNS entries. Be sure to check and test everything before deployment. 
+
 ## Tested
 
 The script has been tested in our own environment (company-wide) on a Windows Server 2008 R2 DNS machine but the script is flexible enough to work for the newer Operating Systems as well you need to do some edits mainly to the AdBlock list. 
