@@ -6,7 +6,7 @@ We installed this script as a security measure and to ease deployment for all us
 
 ## Caution
 
-There is code included to clean up the registry of old DNS entries. This needs to be tweaked to your environment as it is will otherwise delete valid DNS entries. Be sure to check and test everything before deployment. 
+There is code included to clean up the registry of old DNS entries to keep the AdBlock list up to date. This needs to be tweaked to your environment as it could otherwise delete valid DNS entries. Be sure to check and test everything before deployment. 
 
 ## Tested
 
