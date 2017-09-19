@@ -75,7 +75,6 @@ Write-Host "Imported AdBlock file"
 Write-Host "Starting DNS Server..."
 Get-Service | Where {$_.Name -Eq "DNS"} | Start-Service
 Write-Host "Started DNS Server"
-
 	
 #Removing Blacklist files older then 15 days
 Write-Host "Removing old AdBlock files..."
