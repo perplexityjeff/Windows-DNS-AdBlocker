@@ -62,6 +62,10 @@ Write-Host "Stopping DNS Server..."
 Get-Service | Where {$_.Name -Eq "DNS"} | Stop-Service
 Write-Host "Stopped DNS Server"
 
+#Remove All Old Entries (CAUTION: Be sure to tweak this to your environment and not delete valid DNS entries)
+$zonesOld = Get-ChildItem "HKLM:\software\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones\"
+$zonesOld | Where-Object {$_.Property -Contains 'Database File'} | Remove-Item
+
 #Importing the file into regedit
 Write-Host "Importing AdBlock file..." 
 regedit.exe /s $blacklist
