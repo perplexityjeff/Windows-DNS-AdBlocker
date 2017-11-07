@@ -14,7 +14,7 @@ The script has been tested in our own environment (company-wide) on a Windows Se
 
 ## AdBlock List
 
-The script currently uses a very specific AdBlock list from https://pgl.yoyo.org/adservers/ they also have a great explanation about how to setup a Windows DNS AdBlocker on the website on this page https://pgl.yoyo.org/adservers/#other and nagivating to the "Microsoft DNS Server" section. You will want to read it because you will require some pre-setup before the script can run fully automated. 
+The script currently uses a very specific AdBlock list from https://pgl.yoyo.org/adservers/ they also have a great explanation about how to setup a Windows DNS AdBlocker on the website on this page https://pgl.yoyo.org/adservers/#other and navigating to the "Microsoft DNS Server" section. You will want to read it because you will require some pre-setup before the script can run fully automated. 
 
 Currently in the script we are using this specific AdBlock file:
 https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=0&mimetype=plaintext
