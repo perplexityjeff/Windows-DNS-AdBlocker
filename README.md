@@ -10,7 +10,7 @@ There is code included to clean up the registry of old DNS entries to keep the A
 
 ## Tested
 
-The script has been tested in our own environment (company-wide) on a Windows Server 2008 R2 DNS machine but the script is flexible enough to work for the newer Operating Systems as well you need to do some edits mainly to the AdBlock list. 
+The script has been tested in our own environment (company-wide) on a Windows Server 2008 R2 / 2016 DNS machine but the script is flexible enough to work for the newer Operating Systems as well you need to do some edits mainly to the AdBlock list. 
 
 ## AdBlock List
 
