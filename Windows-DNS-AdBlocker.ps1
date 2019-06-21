@@ -52,10 +52,25 @@ if(!(Split-Path -parent $path) -or !(Test-Path -pathType Container (Split-Path -
 { 
 	$path = Join-Path $pwd (Split-Path -leaf $path) 
 }
-$client = new-object System.Net.WebClient 
-$client.DownloadFile($url, $blacklist) 
-"REGEDIT4`n" | Insert-Content $blacklist
-Write-Host "Downloaded newest AdBlock file"
+try 
+{
+	$client = new-object System.Net.WebClient 
+	$client.DownloadFile($url, $blacklist) 
+	"REGEDIT4`n" | Insert-Content $blacklist
+	Write-Host "Downloaded newest AdBlock file"
+}
+catch
+{
+	Write-Error "Download of the DNS Blacklist failed"
+	Exit
+}
+
+Write-Host "Detecting if new DNS Blacklist exists..."
+If (-Not(Test-Path $blacklist))
+{  
+	Write-Error "Download of the DNS Blacklist failed"
+	Exit
+}
 
 #Stopping the DNS Server
 Write-Host "Stopping DNS Server..."
