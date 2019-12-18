@@ -16,6 +16,11 @@ $content | Add-Content $file
 	
 #Declares
 $url = "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=0&mimetype=plaintext" 
+
+$adserversurl = "https://raw.githubusercontent.com/perplexityjeff/Windows-DNS-AdBlocker/master/adservers.dns"
+$adserverstemp = "C:\DNS Blacklist\adservers.dns"
+$adserverslocation = "C:\Windows\System32\dns\adservers.dns"
+
 $date = Get-Date -format "yyyyMMdd"
 $blacklist = "C:\DNS Blacklist\Blacklist_" + $date +".reg"  
 $path = "C:\DNS Blacklist\"
@@ -32,6 +37,24 @@ Else
 	New-Item $path -ItemType directory
 	Write-Host "Download location has been created"
 }   
+
+#Testing if adservers.dns file exists
+Write-Host "Detecting if adservers.dns file exists..."
+If (-Not(Test-Path $adserverslocation))
+{
+	Write-Host "Downloading default adservers.dns file..."
+	$client = new-object System.Net.WebClient 
+	$client.DownloadFile($adserversurl, $adserverstemp) 
+	Write-Host "Downloaded default adservers.dns file"
+	
+	Write-Host "Placing downloaded adservers.dns file in the systemroot..."
+	Move-Item $adserverstemp $adserverslocation
+	Write-Host "Placed downloaded adservers.dns file in the systemroot"
+}
+Else
+{
+	Write-Host "Detected adservers.dns file"
+}
 
 #Testing if DNS Blacklist exists
 Write-Host "Detecting if older DNS Blacklist exists..."
@@ -78,6 +101,7 @@ Get-Service | Where {$_.Name -Eq "DNS"} | Stop-Service
 Write-Host "Stopped DNS Server"
 
 #Remove All Old Entries (CAUTION: Be sure to tweak this to your environment and not delete valid DNS entries)
+Write-Host "Deleting old Blacklist entries from Registry"
 Get-ChildItem "HKLM:\software\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones\" | 
    ForEach-Object {
        $CurrentKey = (Get-ItemProperty -Path $_.PsPath)
@@ -85,6 +109,7 @@ Get-ChildItem "HKLM:\software\Microsoft\Windows NT\CurrentVersion\DNS Server\Zon
          $CurrentKey|Remove-Item -Force #-Whatif
        }
     }
+Write-Host "Deleted old Blacklist entries from Registry"
 
 #Importing the file into regedit
 Write-Host "Importing AdBlock file..." 
