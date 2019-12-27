@@ -75,7 +75,19 @@ try
         {
             Write-Host "Downloading default $adServerZoneFile file..."
             $client = new-object System.Net.WebClient
-            $client.DownloadFile($adserversurl, $adserverstemp)
+
+            try
+            {
+                $client.DownloadFile($adserversurl, $adserverstemp)
+            }
+            finally
+            {
+                if ($client)
+                {
+                    $client.Dispose()
+                }
+            }
+
             Write-Host "Downloaded default $adServerZoneFile file"
 
             Write-Host "Placing downloaded $adServerZoneFile file in the systemroot..."
@@ -109,7 +121,19 @@ try
         try
         {
             $client = new-object System.Net.WebClient
-            $client.DownloadFile($url, $blacklist)
+
+            try
+            {
+                $client.DownloadFile($url, $blacklist)
+            }
+            finally
+            {
+                if ($client)
+                {
+                    $client.Dispose()
+                }
+            }
+
             "REGEDIT4`n" | Insert-Content $blacklist
             Write-Host "Downloaded newest AdBlock file"
         }
