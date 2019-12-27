@@ -140,6 +140,7 @@ try
         # Cleanly detect zones that are using adservers.dns
         if ($CurrentKey.PSObject.Properties.Name -icontains 'DatabaseFile' -and $CurrentKey.DatabaseFile -ieq $adServerZoneFile)
         {
+            Write-Verbose "Removing zone: ($CurrentKey.PSChildName)"
             $CurrentKey | Remove-Item -Force #-Whatif
         }
     }
