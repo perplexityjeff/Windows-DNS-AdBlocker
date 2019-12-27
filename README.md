@@ -26,7 +26,7 @@ The file included in this repo called adservers.dns is a file that should be cop
 
 ## Cleaning up
 
-IF you want to remove all the adblock zones from your DNS, run this script again with the `-Remove` switch. Please pay attention to the `Caution` paragraph above.
+If you want to remove all the adblock zones from your DNS, run this script again with the `-Remove` switch. Please pay attention to the `Caution` paragraph above.
 
 ## License
 
