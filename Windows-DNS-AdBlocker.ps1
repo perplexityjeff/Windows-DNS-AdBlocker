@@ -20,15 +20,22 @@ function Insert-Content ($file)
 
 #Declares
 $url = "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=0&mimetype=plaintext"
-
-$adserversurl = "https://raw.githubusercontent.com/perplexityjeff/Windows-DNS-AdBlocker/master/adservers.dns"
-$adserverstemp = "C:\DNS Blacklist\adservers.dns"
-$adserverslocation = "C:\Windows\System32\dns\adservers.dns"
+$adServerZoneFile = "adservers.dns"
+$adserversurl = "https://raw.githubusercontent.com/perplexityjeff/Windows-DNS-AdBlocker/master/$adServerZoneFile"
+$adserverstemp = "C:\DNS Blacklist\$adServerZoneFile"
+$adserverslocation = "C:\Windows\System32\dns\$adServerZoneFile"
 
 $date = Get-Date -format "yyyyMMdd"
 $blacklist = "C:\DNS Blacklist\Blacklist_" + $date + ".reg"
 $path = "C:\DNS Blacklist\"
 $limit = (Get-Date).AddDays(-15)
+
+# Test if DNS server exists on this host
+if (-not (Get-Service -Name DNS -ErrorAction SilentlyContinue))
+{
+	Write-Error "Local DNS server not found"
+	exit 1
+}
 
 #Testing if DNS Blacklist folder exists
 Write-Host "Detecting if download location exists..."
@@ -42,22 +49,22 @@ else
 	Write-Host "Download location has been created"
 }
 
-#Testing if adservers.dns file exists
-Write-Host "Detecting if adservers.dns file exists..."
+#Testing if $adServerZoneFile file exists
+Write-Host "Detecting if $adServerZoneFile file exists..."
 if (-Not(Test-Path $adserverslocation))
 {
-	Write-Host "Downloading default adservers.dns file..."
+	Write-Host "Downloading default $adServerZoneFile file..."
 	$client = new-object System.Net.WebClient
 	$client.DownloadFile($adserversurl, $adserverstemp)
-	Write-Host "Downloaded default adservers.dns file"
+	Write-Host "Downloaded default $adServerZoneFile file"
 
-	Write-Host "Placing downloaded adservers.dns file in the systemroot..."
+	Write-Host "Placing downloaded $adServerZoneFile file in the systemroot..."
 	Move-Item $adserverstemp $adserverslocation
-	Write-Host "Placed downloaded adservers.dns file in the systemroot"
+	Write-Host "Placed downloaded $adServerZoneFile file in the systemroot"
 }
 else
 {
-	Write-Host "Detected adservers.dns file"
+	Write-Host "Detected $adServerZoneFile file"
 }
 
 #Testing if DNS Blacklist exists
@@ -101,16 +108,18 @@ if (-Not(Test-Path $blacklist))
 
 #Stopping the DNS Server
 Write-Host "Stopping DNS Server..."
-Get-Service | Where-Object { $_.Name -Eq "DNS" } | Stop-Service
+Stop-Service -Name DNS
 Write-Host "Stopped DNS Server"
 
 #Remove All Old Entries (CAUTION: Be sure to tweak this to your environment and not delete valid DNS entries)
 Write-Host "Deleting old Blacklist entries from Registry"
 Get-ChildItem "HKLM:\software\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones\" |
 ForEach-Object {
-	$CurrentKey = (Get-ItemProperty -Path $_.PsPath)
+
+	$CurrentKey = Get-ItemProperty -Path $_.PsPath
+
 	if ($CurrentKey -match "adservers.dns")
- {
+	{
 		$CurrentKey | Remove-Item -Force #-Whatif
 	}
 }
@@ -123,7 +132,7 @@ Write-Host "Imported AdBlock file"
 
 #Starting the DNS Server
 Write-Host "Starting DNS Server..."
-Get-Service | Where-Object { $_.Name -Eq "DNS" } | Start-Service
+Start-Service -Name DNS
 Write-Host "Started DNS Server"
 
 #Removing Blacklist files older then 15 days
