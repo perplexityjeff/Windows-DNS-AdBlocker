@@ -117,9 +117,10 @@ try
 
 		$CurrentKey = Get-ItemProperty -Path $_.PsPath
 
-		if ($CurrentKey -match "adservers.dns")
+		# Cleanly detect zones that are using adservers.dns
+		if ($CurrentKey.PSObject.Properties.Name -icontains 'DatabaseFile' -and $CurrentKey.DatabaseFile -ieq $adServerZoneFile)
 		{
-			$CurrentKey | Remove-Item -Force #-Whatif
+			$CurrentKey | Remove-Item -Force # -Whatif
 		}
 	}
 
