@@ -1,3 +1,16 @@
+<#
+	.SYNOPSIS
+		Populate Windows DNS with black-hole entries for known ad-server domains
+
+	.PARAMETER Remove
+		If set, remove all ad-server entries from the DNS
+		If not set, update DNS with latest ad-server entries.
+#>
+param
+(
+	[switch]$Remove
+)
+
 Write-Host "===================================================="
 Write-Host "Windows-DNS-AdBlocker"
 Write-Host "===================================================="
@@ -38,71 +51,78 @@ try
 		throw "Local DNS server not found"
 	}
 
-	#Testing if DNS Blacklist folder exists
-	Write-Host "Detecting if download location exists..."
-	if (Test-Path $path)
- 	{
-		Write-Host "Download location exists"
+	if ($Remove)
+	{
+		Write-Host "Removing ad-block entries from DNS only."
 	}
 	else
- 	{
-		New-Item $path -ItemType directory
-		Write-Host "Download location has been created"
-	}
+	{
+		#Testing if DNS Blacklist folder exists
+		Write-Host "Detecting if download location exists..."
+		if (Test-Path $path)
+		{
+			Write-Host "Download location exists"
+		}
+		else
+		{
+			New-Item $path -ItemType directory
+			Write-Host "Download location has been created"
+		}
 
-	#Testing if $adServerZoneFile file exists
-	Write-Host "Detecting if $adServerZoneFile file exists..."
-	if (-Not(Test-Path $adserverslocation))
- 	{
-		Write-Host "Downloading default $adServerZoneFile file..."
-		$client = new-object System.Net.WebClient
-		$client.DownloadFile($adserversurl, $adserverstemp)
-		Write-Host "Downloaded default $adServerZoneFile file"
+		#Testing if $adServerZoneFile file exists
+		Write-Host "Detecting if $adServerZoneFile file exists..."
+		if (-Not(Test-Path $adserverslocation))
+		{
+			Write-Host "Downloading default $adServerZoneFile file..."
+			$client = new-object System.Net.WebClient
+			$client.DownloadFile($adserversurl, $adserverstemp)
+			Write-Host "Downloaded default $adServerZoneFile file"
 
-		Write-Host "Placing downloaded $adServerZoneFile file in the systemroot..."
-		Move-Item $adserverstemp $adserverslocation
-		Write-Host "Placed downloaded $adServerZoneFile file in the systemroot"
-	}
-	else
- 	{
-		Write-Host "Detected $adServerZoneFile file"
-	}
+			Write-Host "Placing downloaded $adServerZoneFile file in the systemroot..."
+			Move-Item $adserverstemp $adserverslocation
+			Write-Host "Placed downloaded $adServerZoneFile file in the systemroot"
+		}
+		else
+		{
+			Write-Host "Detected $adServerZoneFile file"
+		}
 
-	#Testing if DNS Blacklist exists
-	Write-Host "Detecting if older DNS Blacklist exists..."
-	if (Test-Path $blacklist)
- 	{
-		Write-Host "Deleting old DNS Blacklist..."
-		Remove-Item ($blacklist)
-		Write-Host "Deleted old DNS Blacklist"
-	}
-	else
- 	{
-		Write-Host "No existing DNS Blacklist found"
-	}
+		#Testing if DNS Blacklist exists
+		Write-Host "Detecting if older DNS Blacklist exists..."
+		if (Test-Path $blacklist)
+		{
+			Write-Host "Deleting old DNS Blacklist..."
+			Remove-Item ($blacklist)
+			Write-Host "Deleted old DNS Blacklist"
+		}
+		else
+		{
+			Write-Host "No existing DNS Blacklist found"
+		}
 
-	#Downloading of the Adblock reg file
-	Write-Host "Downloading newest AdBlock file..."
-	if (-not (Split-Path -parent $path) -or -not (Test-Path -pathType Container (Split-Path -parent $path)))
- 	{
-		$path = Join-Path $pwd (Split-Path -leaf $path)
-	}
-	try
- 	{
-		$client = new-object System.Net.WebClient
-		$client.DownloadFile($url, $blacklist)
-		"REGEDIT4`n" | Insert-Content $blacklist
-		Write-Host "Downloaded newest AdBlock file"
-	}
-	catch
- 	{
-		throw "Download of the DNS Blacklist failed"
-	}
+		#Downloading of the Adblock reg file
+		Write-Host "Downloading newest AdBlock file..."
+		if (-not (Split-Path -parent $path) -or -not (Test-Path -pathType Container (Split-Path -parent $path)))
+		{
+			$path = Join-Path $pwd (Split-Path -leaf $path)
+		}
+		try
+		{
+			$client = new-object System.Net.WebClient
+			$client.DownloadFile($url, $blacklist)
+			"REGEDIT4`n" | Insert-Content $blacklist
+			Write-Host "Downloaded newest AdBlock file"
+		}
+		catch
+		{
+			throw "Download of the DNS Blacklist failed"
+		}
 
-	Write-Host "Detecting if new DNS Blacklist exists..."
-	if (-Not(Test-Path $blacklist))
- 	{
-		throw "Download of the DNS Blacklist failed"
+		Write-Host "Detecting if new DNS Blacklist exists..."
+		if (-Not(Test-Path $blacklist))
+		{
+			throw "Download of the DNS Blacklist failed"
+		}
 	}
 
 	#Stopping the DNS Server
@@ -120,16 +140,19 @@ try
 		# Cleanly detect zones that are using adservers.dns
 		if ($CurrentKey.PSObject.Properties.Name -icontains 'DatabaseFile' -and $CurrentKey.DatabaseFile -ieq $adServerZoneFile)
 		{
-			$CurrentKey | Remove-Item -Force # -Whatif
+			$CurrentKey | Remove-Item -Force #-Whatif
 		}
 	}
 
 	Write-Host "Deleted old Blacklist entries from Registry"
 
-	#Importing the file into regedit
-	Write-Host "Importing AdBlock file..."
-	regedit.exe /s $blacklist
-	Write-Host "Imported AdBlock file"
+	if (-not $Remove)
+	{
+		#Importing the file into regedit
+		Write-Host "Importing AdBlock file..."
+		regedit.exe /s $blacklist
+		Write-Host "Imported AdBlock file"
+	}
 
 	#Starting the DNS Server
 	Write-Host "Starting DNS Server..."
