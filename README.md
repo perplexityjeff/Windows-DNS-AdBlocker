@@ -6,15 +6,16 @@ We installed this script as a security measure and to ease deployment for all us
 
 ## Caution
 
-There is code included to clean up the registry of old DNS entries to keep the AdBlock list up to date. This needs to be tweaked to your environment as it could otherwise delete valid DNS entries. Be sure to check and test everything before deployment. 
+There is code included to clean up the registry of old DNS entries to keep the AdBlock list up to date. This should be OK as it explicitly checks for
+existence of the property `DatabaseFile` having a value of `adservers.dns` on each zone entry but be sure to test it first, having a backup of your valid zones!
 
 ## Tested
 
-The script has been tested in our own environment (company-wide) on a Windows Server 2008 R2 / 2016 DNS machine but the script is flexible enough to work for the newer Operating Systems as well you need to do some edits mainly to the AdBlock list. 
+The script has been tested in our own environment (company-wide) on a Windows Server 2008 R2 / 2016 DNS machine but the script is flexible enough to work for the newer Operating Systems as well you need to do some edits mainly to the AdBlock list.
 
 ## AdBlock List
 
-The script currently uses a very specific AdBlock list from https://pgl.yoyo.org/adservers/ they also have a great explanation about how to setup a Windows DNS AdBlocker on the website on this page https://pgl.yoyo.org/adservers/#other and navigating to the "Microsoft DNS Server" section. You will want to read it because you will require some pre-setup before the script can run fully automated. 
+The script currently uses a very specific AdBlock list from https://pgl.yoyo.org/adservers/ they also have a great explanation about how to setup a Windows DNS AdBlocker on the website on this page https://pgl.yoyo.org/adservers/#other and navigating to the "Microsoft DNS Server" section. You will want to read it because you will require some pre-setup before the script can run fully automated.
 
 Currently in the script we are using this specific AdBlock file:
 https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=0&mimetype=plaintext
@@ -22,6 +23,10 @@ https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=
 ## Adservers.dns file
 
 The file included in this repo called adservers.dns is a file that should be copied to %SystemRoot%\system32\dns as a reference of where the entry detected needs to go when a ad has been detected. The one that I added routes everything to localhost making them not appear but you could customize this. The script automatically downloads the default adservers.dns file when has detected it is not found.
+
+## Cleaning up
+
+If you want to remove all the adblock zones from your DNS, run this script again with the `-Remove` switch. Please pay attention to the `Caution` paragraph above.
 
 ## License
 
