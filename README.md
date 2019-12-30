@@ -8,6 +8,8 @@ We installed this script as a security measure and to ease deployment for all us
 
 ## Caution
 
+Use at your own risk! Be sure to thoroughly test before letting loose in any kind of corporate infrastructure!
+
 There is code included to clean up the registry of old DNS entries to keep the AdBlock list up to date. This should be OK as it explicitly checks for existence of the property `DatabaseFile` having a value of `adservers.dns` on each zone entry but be sure to test it first, having a backup of your valid zones!
 
 Where Active Directory integration is used, the `Responsible Person` field of the SOA record is set to a GUID value that is checked for on deletion, so should in theory be very safe.
