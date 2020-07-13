@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-        Populate Windows DNS with black-hole entries for known ad-server domains
+        Populate Windows DNS with entries for known ad-server domains to block them
 
     .DESCRIPTION
-        Use DNS to block known ad-server domains by redirecting requests to a black hole (localhost)
+        Use DNS to block known ad-server domains by redirecting requests to localhost
         This needs to be run with administrator privilege, and if using Active Directory integration,
         you should run this under an account with domain admin privilege.
 
@@ -42,7 +42,7 @@ function Insert-Content ($file)
 }
 
 #Declares
-$artifactPath = Join-Path $env:TEMP "DNS Blacklist"
+$artifactPath = Join-Path $env:TEMP "DNS Blocklist"
 $url = "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=0&mimetype=plaintext"
 $adServerZoneFile = "adservers.dns"
 $adserversurl = "https://raw.githubusercontent.com/perplexityjeff/Windows-DNS-AdBlocker/master/$adServerZoneFile"
@@ -50,7 +50,7 @@ $adserverstemp = Join-Path $artifactPath $adServerZoneFile
 $adServersZoneFileLocation = Join-Path $env:SYSTEMROOT (Join-Path "System32\dns" $adServerZoneFile)
 
 $date = Get-Date -format "yyyyMMdd"
-$blacklist = Join-Path $artifactPath ("Blacklist_" + $date + ".reg")
+$blocklist = Join-Path $artifactPath ("Blocklist_" + $date + ".reg")
 $limit = (Get-Date).AddDays(-15)
 
 # How we will identify Active Directory integrated zones created by this tool.
@@ -134,7 +134,7 @@ try
     }
     else
     {
-        # Testing if DNS Blacklist folder exists
+        # Testing if DNS Blocklist folder exists
         Write-Host "Detecting if download location exists..."
         if (Test-Path $artifactPath)
         {
@@ -176,17 +176,17 @@ try
             Write-Host "Detected $adServerZoneFile file"
         }
 
-        # Testing if DNS Blacklist exists
-        Write-Host "Detecting if older DNS Blacklist exists..."
-        if (Test-Path $blacklist)
+        # Testing if DNS Blocklist exists
+        Write-Host "Detecting if older DNS Blocklist exists..."
+        if (Test-Path $blocklist)
         {
-            Write-Host "Deleting old DNS Blacklist..."
-            Remove-Item ($blacklist)
-            Write-Host "Deleted old DNS Blacklist"
+            Write-Host "Deleting old DNS Blocklist..."
+            Remove-Item ($blocklist)
+            Write-Host "Deleted old DNS Blocklist"
         }
         else
         {
-            Write-Host "No existing DNS Blacklist found"
+            Write-Host "No existing DNS Blocklist found"
         }
 
         # Downloading of the Adblock reg file
@@ -201,7 +201,7 @@ try
 
             try
             {
-                $client.DownloadFile($url, $blacklist)
+                $client.DownloadFile($url, $blocklist)
             }
             finally
             {
@@ -215,13 +215,13 @@ try
         }
         catch
         {
-            throw "Download of the DNS Blacklist failed"
+            throw "Download of the DNS Blocklist failed"
         }
 
-        Write-Host "Detecting if new DNS Blacklist exists..."
-        if (-Not(Test-Path $blacklist))
+        Write-Host "Detecting if new DNS Blocklist exists..."
+        if (-Not(Test-Path $blocklist))
         {
-            throw "Download of the DNS Blacklist failed"
+            throw "Download of the DNS Blocklist failed"
         }
     }
 
@@ -236,7 +236,7 @@ try
     }
 
     # Remove All Old Entries (CAUTION: Be sure to tweak this to your environment and not delete valid DNS entries)
-    Write-Host "Deleting old Blacklist entries"
+    Write-Host "Deleting old Blocklist entries"
     $zoneKey = "HKLM:\software\Microsoft\Windows NT\CurrentVersion\DNS Server\Zones\"
 
     # Read all zones _before_ modifying anything
@@ -349,7 +349,7 @@ try
 
     # Clear progress bar
     Write-Progress -Activity "Deleting adserver DNS zones" -Status "100% Complete:" -PercentComplete 100 -Completed
-    Write-Host "Deleted $numRemoved old Blacklist entries from Registry"
+    Write-Host "Deleted $numRemoved old Blocklist entries from Registry"
 
     if (-not $Remove)
     {
@@ -360,7 +360,7 @@ try
             $numAdded = 0
 
             # Parse the REG file for domains and add them
-            $domains = Get-Content $blacklist |
+            $domains = Get-Content $blocklist |
             Foreach-Object {
 
                 if ($_ -match '\\(?<domain>[^\\]+)\]\s*$')
@@ -383,7 +383,7 @@ try
 
                 if ($useActiveDirectory)
                 {
-                    # Create Active Directory integrated zone and add blackhole records
+                    # Create Active Directory integrated zone and add records to block
                     # Set the responsible person field in the SOA record to our magic value for easy indentification on delete.
                     $zone = Add-DnsServerPrimaryZone -Name $_ -ResponsiblePerson $responsiblePerson -ReplicationScope Forest -PassThru
                     $zone | Add-DnsServerResourceRecordA -IPv4Address 127.0.0.1 -Name '*' -TimeToLive 01:00:00
@@ -405,8 +405,8 @@ try
         else
         {
             # Importing the file into regedit
-            "REGEDIT4`n" | Insert-Content $blacklist
-            regedit.exe /s $blacklist
+            "REGEDIT4`n" | Insert-Content $blocklist
+            regedit.exe /s $blocklist
             Write-Host "Imported AdBlock file"
         }
     }
@@ -419,7 +419,7 @@ try
         Write-Host "Started DNS Server"
     }
 
-    #Removing Blacklist files older then 15 days
+    #Removing Blocklist files older then 15 days
     Write-Host "Removing old AdBlock files..."
     Get-ChildItem -Path $artifactPath -Recurse -Force | Where-Object { -not $_.PSIsContainer -and $_.CreationTime -lt $limit } | Remove-Item -Force
     Write-Host "Removed old AdBlock files"
