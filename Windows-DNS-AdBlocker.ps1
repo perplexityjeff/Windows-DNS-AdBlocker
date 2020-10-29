@@ -61,6 +61,9 @@ $useActiveDirectory = $false
 $activeDirectoryDetected = $null -ne $env:LOGONSERVER -and $null -ne $env:USERDOMAIN
 $haveDnsServerModule = $null -ne (Get-Module -ListAvailable DnsServer)
 
+# This sets the security used in the WebClient to TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 try
 {
     # Test for admin rights
