@@ -23,6 +23,7 @@ param
 
 Write-Host "===================================================="
 Write-Host "Windows-DNS-AdBlocker"
+Write-Host "https://github.com/perplexityjeff/Windows-DNS-AdBlocker"
 Write-Host "===================================================="
 
 function Insert-Content ($file)
