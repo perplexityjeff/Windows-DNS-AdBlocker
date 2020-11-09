@@ -69,7 +69,8 @@ try
 }
 catch
 {
-	[System.Net.SecurityProtocolType]::Tls12
+    $p = [Enum]::ToObject([System.Net.SecurityProtocolType], 3072);
+    [System.Net.ServicePointManager]::SecurityProtocol = $p;
 }
 
 try
