@@ -61,8 +61,15 @@ $useActiveDirectory = $false
 $activeDirectoryDetected = $null -ne $env:LOGONSERVER -and $null -ne $env:USERDOMAIN
 $haveDnsServerModule = $null -ne (Get-Module -ListAvailable DnsServer)
 
-# This sets the security used in the WebClient to TLS 1.2
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+# This sets the security used in the WebClient to TLS 1.2, if it fails like on V2 it uses another method
+try
+{
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+}
+catch
+{
+	[System.Net.SecurityProtocolType]::Tls12
+}
 
 try
 {
