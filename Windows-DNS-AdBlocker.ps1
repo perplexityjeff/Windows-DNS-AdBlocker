@@ -398,8 +398,8 @@ try
                     # Create Active Directory integrated zone and add records to block
                     # Set the responsible person field in the SOA record to our magic value for easy indentification on delete.
                     $zone = Add-DnsServerPrimaryZone -Name $_ -ResponsiblePerson $responsiblePerson -ReplicationScope Forest -PassThru
-                    $zone | Add-DnsServerResourceRecordA -IPv4Address 127.0.0.1 -Name '*' -TimeToLive 01:00:00
-                    $zone | Add-DnsServerResourceRecordA -IPv4Address 127.0.0.1 -Name '@' -TimeToLive 01:00:00
+                    $zone | Add-DnsServerResourceRecordA -IPv4Address 0.0.0.0 -Name '*' -TimeToLive 01:00:00
+                    $zone | Add-DnsServerResourceRecordA -IPv4Address 0.0.0.0 -Name '@' -TimeToLive 01:00:00
                 }
                 else
                 {
