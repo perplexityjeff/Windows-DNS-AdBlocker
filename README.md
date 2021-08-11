@@ -27,7 +27,7 @@ https://pgl.yoyo.org/adservers/serverlist.php?hostformat=win32reg-sp4&showintro=
 
 ## Adservers.dns file
 
-The file included in this repo called `adservers.dns` is a file that should be copied to `%SystemRoot%\system32\dns` as a reference of where the entry detected needs to go when a ad has been detected. The one that I added routes everything to localhost making them not appear but you could customize this. The script automatically downloads the default `adservers.dns` file when has detected it is not found.
+The file included in this repo called `adservers.dns` is a file that should be copied to `%SystemRoot%\system32\dns` as a reference of where the entry detected needs to go when a ad has been detected. The one that I added routes everything to 0.0.0.0 making them not appear but you could customize this. The script automatically downloads the default `adservers.dns` file when has detected it is not found.
 
 This file is used only for non-Active Directory integrated deployments. For AD-integrated mode, the default A record entries are pointed to the same location (localhost) as that in `adservers.dns`. Currently, if you wish to change this you will need to edit the code.
 
